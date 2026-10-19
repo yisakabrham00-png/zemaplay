@@ -1,18 +1,10 @@
-ZemaPlay — ሙሉ የሙከራ ፓኬጅ
+ZemaPlay 2.0 — የመጀመሪያ ሙከራ
 
-ፋይሎች:
-- index.html: ዲዛይንና ተግባራዊ የጨዋታ ክፍሎች
-- manifest.json: የPWA/App መረጃ
-- sw.js: መሠረታዊ offline service worker
-- icon.svg: የApp አዶ
-
-GitHub ላይ ማስገባት:
-1. እነዚህን አራት ፋይሎች በ zemaplay repository root ላይ አስገባ።
-2. ያለውን index.html በዚህ አዲስ index.html ተካ። ሌሎቹን ሶስት ፋይሎች አክል።
-3. Commit changes አድርግ። GitHub Pages በ main / (root) ላይ እንዳለ አረጋግጥ።
-4. ድረ-ገጹን refresh አድርግ።
+1. ZIP ፋይሉን Extract/Unzip አድርግ።
+2. index.html በbrowser ክፈት ወይም ወደ GitHub repo ጫን።
+3. GitHub Pages ለማስኬድ index.html በrepo ዋና ክፍል (root) ውስጥ አስቀምጥ።
 
 አስፈላጊ:
-- Telebirr ክፍል ማሳያ ብቻ ነው፤ ገንዘብ አይቀበልም እና ክፍያ አያረጋግጥም።
-- እውነተኛ ክፍያ፣ መለያዎች፣ መልዕክት መላክ እና በእውነት የሚሰራ leaderboard ለማድረግ backend ያስፈልጋል።
-- የውጤት ማሳያው ምሳሌ ነው፤ እውነተኛ ሰዎች አይደሉም።
+- ይህ front-end prototype ብቻ ነው። የሙከራ ምዝገባዎች በአካባቢያዊ browser storage ይቀመጣሉ፤ ለአስተዳዳሪ አይደርሱም።
+- እውነተኛ account, photo upload, chat, online leaderboard እና payment ገና አልተገናኙም። ለእነዚህ secure backend/database ያስፈልጋል።
+- እውነተኛ ሽልማት ወይም ክፍያ አልተዘጋጀም።
