@@ -1,0 +1,8 @@
+{
+  "name":"ZemaPlay — Hawassa Play & Connect",
+  "short_name":"ZemaPlay",
+  "description":"የሐዋሳ ወጣቶች መዝናኛ፣ ጨዋታ እና መልካም ቃል",
+  "lang":"am","start_url":"./","scope":"./","display":"standalone",
+  "background_color":"#0d061a","theme_color":"#160b2e",
+  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

@@ -1,211 +1,39 @@
-<!DOCTYPE html>
-<html lang="am">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#130d25">
-  <title>ZemaPlay | የሃዋሳ ወጣቶች መዝናኛ</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root { color-scheme: dark; }
-    body { background: radial-gradient(ellipse at top, #30204f 0%, #130d25 46%, #0b0914 100%); }
-    .glass { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(14px); }
-    .glow { box-shadow: 0 12px 40px rgba(168,85,247,.16); }
-    .pop { animation: pop .28s ease-out; }
-    @keyframes pop { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    button { transition: transform .15s ease, opacity .15s ease; }
-    button:active { transform: scale(.98); }
-    input, textarea { color: #fff; }
-  </style>
-</head>
-<body class="min-h-screen text-white selection:bg-fuchsia-400 selection:text-black">
-  <main class="mx-auto max-w-md px-4 pb-28 pt-5">
-    <header class="mb-6 flex items-center justify-between">
-      <div>
-        <p class="text-xs uppercase tracking-[.28em] text-fuchsia-300">HAWASSA • PLAY • CONNECT</p>
-        <h1 class="mt-1 text-2xl font-black">💜 ZemaPlay</h1>
-      </div>
-      <button id="openPayTop" class="rounded-full border border-fuchsia-300/30 bg-fuchsia-400/10 px-3 py-2 text-sm">✨ ልዩ ጨዋታ</button>
-    </header>
-
-    <section class="glass glow pop rounded-3xl p-5">
-      <p class="text-sm text-fuchsia-200">ወደ የዛሬ መዝናኛህ እንኳን በደህና መጣህ!</p>
-      <h2 class="mt-2 text-3xl font-black leading-tight">አንድ ስካን።<br>አንድ አዲስ ታሪክ።</h2>
-      <p class="mt-3 text-sm leading-6 text-slate-300">ጨዋታ ሞክር፣ የቀኑን ጥያቄ መልስ፣ ለጓደኛህም መልካም መልዕክት ላክ።</p>
-      <div class="mt-5 grid grid-cols-2 gap-3">
-        <button onclick="showGame('daily')" class="rounded-2xl bg-fuchsia-500 px-4 py-3 text-left font-bold shadow-lg shadow-fuchsia-900/30">🎯 የቀኑ ጥያቄ<span class="mt-1 block text-xs font-normal text-fuchsia-100">ነፃ ጨዋታ</span></button>
-        <button onclick="showGame('truth')" class="rounded-2xl bg-violet-500/20 px-4 py-3 text-left font-bold ring-1 ring-violet-300/30">🎭 Truth or Dare<span class="mt-1 block text-xs font-normal text-violet-100">የቡድን ደስታ</span></button>
-      </div>
-    </section>
-
-    <section class="mt-6">
-      <div class="mb-3 flex items-center justify-between">
-        <h3 class="text-lg font-bold">ምን መጫወት ትፈልጋለህ?</h3>
-        <span class="text-xs text-slate-400">ምረጥ</span>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="showGame('match')" class="glass rounded-2xl p-4 text-left">
-          <span class="text-2xl">💞</span><span class="mt-2 block font-bold">Match Quiz</span><span class="mt-1 block text-xs text-slate-400">የምርጫ ተመሳሳይነት</span>
-        </button>
-        <button onclick="showGame('secret')" class="glass rounded-2xl p-4 text-left">
-          <span class="text-2xl">💌</span><span class="mt-2 block font-bold">መልካም መልዕክት</span><span class="mt-1 block text-xs text-slate-400">ለጓደኛ አዎንታዊ ቃል</span>
-        </button>
-        <button onclick="showGame('daily')" class="glass rounded-2xl p-4 text-left">
-          <span class="text-2xl">⚡</span><span class="mt-2 block font-bold">ፈጣን ፈተና</span><span class="mt-1 block text-xs text-slate-400">አንድ ደቂቃ ደስታ</span>
-        </button>
-        <button onclick="openPay()" class="glass rounded-2xl p-4 text-left">
-          <span class="text-2xl">👑</span><span class="mt-2 block font-bold">ልዩ ፓኬጆች</span><span class="mt-1 block text-xs text-slate-400">አማራጭ የሚከፈልባቸው</span>
-        </button>
-      </div>
-    </section>
-
-    <section id="gamePanel" class="glass pop mt-5 hidden rounded-3xl p-5">
-      <div class="flex items-center justify-between">
-        <h3 id="gameTitle" class="text-xl font-black">ጨዋታ</h3>
-        <button onclick="closeGame()" aria-label="ዝጋ" class="rounded-full bg-white/10 px-3 py-1">✕</button>
-      </div>
-      <div id="gameBody" class="mt-4"></div>
-    </section>
-
-    <section class="glass mt-6 rounded-2xl p-4">
-      <div class="flex items-start gap-3">
-        <span class="text-xl">🛡️</span>
-        <div>
-          <h3 class="font-bold">ደህንነት ከሁሉ በፊት</h3>
-          <p class="mt-1 text-xs leading-5 text-slate-300">የሌላ ሰውን ሚስጥር ያለፈቃድ አታጋራ። የግል ስልክ፣ ፓስወርድ ወይም የግል ፎቶ አትጠይቅ። ይህ የሙከራ ስሪት መልዕክቶችን ወደ ሌሎች አይልክም።</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <nav class="fixed inset-x-0 bottom-0 z-20 border-t border-white/10 bg-[#100b1feF] px-4 py-3 backdrop-blur-xl">
-    <div class="mx-auto flex max-w-md items-center justify-around text-xs text-slate-300">
-      <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="flex flex-col items-center gap-1">🏠<span>መነሻ</span></button>
-      <button onclick="showGame('daily')" class="flex flex-col items-center gap-1">🎯<span>ጨዋታ</span></button>
-      <button onclick="showGame('secret')" class="flex flex-col items-center gap-1">💌<span>መልዕክት</span></button>
-      <button onclick="openPay()" class="flex flex-col items-center gap-1">👑<span>ፓኬጅ</span></button>
-    </div>
-  </nav>
-
-  <div id="payDrawer" class="fixed inset-0 z-40 hidden items-end justify-center bg-black/70 p-3 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="payTitle">
-    <section class="pop w-full max-w-md rounded-3xl border border-white/15 bg-[#171026] p-5 shadow-2xl">
-      <div class="flex items-center justify-between">
-        <h2 id="payTitle" class="text-xl font-black">💳 የቴሌብር ክፍያ</h2>
-        <button onclick="closePay()" class="rounded-full bg-white/10 px-3 py-1" aria-label="ዝጋ">✕</button>
-      </div>
-      <p class="mt-2 text-sm leading-6 text-slate-300">የፓኬጅ ዋጋ ምረጥ። ከዚያ በታች ያለውን የክፍያ መለያ ከእውነተኛ መረጃህ ጋር ቀይር።</p>
-      <label for="package" class="mt-4 block text-sm font-semibold">ፓኬጅ</label>
-      <select id="package" class="mt-2 w-full rounded-xl border border-white/15 bg-[#241936] p-3">
-        <option value="50">የጥያቄ ፓኬጅ — 50 ብር</option>
-        <option value="75">የጓደኛ ጨዋታ — 75 ብር</option>
-        <option value="100">የተጨማሪ ጨዋታ ፓኬጅ — 100 ብር</option>
-      </select>
-      <div class="mt-3 rounded-xl bg-emerald-400/10 p-3 text-sm">
-        <p class="font-bold text-emerald-200">የቴሌብር መለያ፦ እዚህ ትክክለኛ ቁጥርህን አስገባ</p>
-        <p class="mt-1 text-xs text-slate-300">ይህ የሙከራ ቦታ ነው። እውነተኛ የክፍያ ቁጥር አልተያያዘም።</p>
-      </div>
-      <form id="paymentForm" class="mt-4 space-y-3">
-        <div>
-          <label for="txid" class="block text-sm font-semibold">የግብይት መለያ ቁጥር</label>
-          <input id="txid" required minlength="4" maxlength="100" class="mt-1 w-full rounded-xl border border-white/15 bg-white/5 p-3" placeholder="Transaction ID" autocomplete="off">
-        </div>
-        <div>
-          <label for="receipt" class="block text-sm font-semibold">የክፍያ ማስረጃ ምስል (አማራጭ)</label>
-          <input id="receipt" type="file" accept="image/*" class="mt-1 w-full rounded-xl border border-white/15 bg-white/5 p-3 text-xs">
-          <p class="mt-1 text-xs text-slate-400">ይህ ፕሮቶታይፕ ፋይሉን ወደ አገልጋይ አይልክም። ማስረጃ ላይ ያለ ስልክ ቁጥርና ሌላ የግል መረጃ ካለ አትጫን።</p>
-        </div>
-        <button class="w-full rounded-xl bg-emerald-500 px-4 py-3 font-bold text-white" type="submit">የማረጋገጫ ጥያቄ አስገባ</button>
-      </form>
-      <div id="paymentStatus" class="mt-3 hidden rounded-xl bg-amber-400/10 p-3 text-sm text-amber-100" role="status"></div>
-      <p class="mt-3 text-xs leading-5 text-slate-400">ማስረጃ ማስገባት ብቻ ክፍያን አያረጋግጥም። የተከፈለ መብት ከአገልጋይ ማረጋገጫ በኋላ ብቻ መከፈት አለበት።</p>
-    </section>
-  </div>
-
-  <script>
-    const panel = document.getElementById('gamePanel');
-    const title = document.getElementById('gameTitle');
-    const body = document.getElementById('gameBody');
-
-    const dailyQuestions = [
-      'ዛሬ የሚያስደስትህ አንድ ትንሽ ነገር ምንድን ነው?',
-      'አንድ ቀን ከማንኛውም ቦታ መጓዝ ብትችል የት ትሄዳለህ?',
-      'የምትወደው ዘፈን ምንድን ነው እና ለምን?',
-      'ለጓደኛህ የምትሰጠው አንድ ጥሩ ምክር ምንድን ነው?'
-    ];
-    const truths = [
-      'የምትወደውን የቀልድ ፊልም ጥቀስ።',
-      'ስለራስህ የምትኮራበትን አንድ ነገር ንገር።',
-      'በጣም የሚያስቅህ የጓደኛ ትዝታ አጋራ።'
-    ];
-    const dares = [
-      'ለጓደኛህ አንድ እውነተኛ ምስጋና ስጥ።',
-      'በ10 ሰከንድ ውስጥ የምትወደውን ዘፈን በማስታወስ አስቀምጥ።',
-      'አስቂኝ የፊት አገላለጽ አድርግ፤ ፎቶ ማንሳት ግን አማራጭ ነው።'
-    ];
-
-    function choose(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-    function showGame(kind) {
-      panel.classList.remove('hidden');
-      panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      if (kind === 'daily') {
-        title.textContent = '🎯 የቀኑ ጥያቄ';
-        body.innerHTML = `<p class="text-lg font-semibold leading-7">${choose(dailyQuestions)}</p>
-          <textarea id="dailyAnswer" rows="3" maxlength="300" placeholder="መልስህን እዚህ ጻፍ..." class="mt-4 w-full rounded-xl border border-white/15 bg-white/5 p-3"></textarea>
-          <button onclick="localFeedback('መልስህ በዚህ የሙከራ ስሪት በስልክህ ላይ ብቻ ነው፤ ወደ ሌላ ሰው አልተላከም።')" class="mt-3 w-full rounded-xl bg-fuchsia-500 p-3 font-bold">ጨርሻለሁ</button><p id="feedback" class="mt-3 text-sm text-fuchsia-200"></p>`;
-      } else if (kind === 'truth') {
-        title.textContent = '🎭 Truth or Dare';
-        body.innerHTML = `<p class="text-sm text-slate-300">ምረጥ፤ ካልተመቸህ ሌላ ጥያቄ መምረጥ ትችላለህ።</p>
-          <div class="mt-4 grid grid-cols-2 gap-3"><button onclick="truthPick('truth')" class="rounded-xl bg-violet-500 p-3 font-bold">💬 Truth</button><button onclick="truthPick('dare')" class="rounded-xl bg-fuchsia-500 p-3 font-bold">⚡ Dare</button></div>
-          <p id="truthResult" class="mt-4 rounded-xl bg-white/5 p-4 leading-7">ጨዋታውን ለመጀመር አንዱን ምረጥ።</p>`;
-      } else if (kind === 'match') {
-        title.textContent = '💞 የምርጫ ጨዋታ';
-        body.innerHTML = `<p class="text-sm text-slate-300">ለመዝናናት ሶስት ጥያቄዎችን መልስ።</p>
-          <label class="mt-4 block text-sm">1. ምን ይመርጣሉ?</label><select class="match-choice mt-1 w-full rounded-xl bg-[#241936] p-3"><option>ሙዚቃ</option><option>ስፖርት</option><option>ፊልም</option><option>ጉዞ</option></select>
-          <label class="mt-3 block text-sm">2. ቅዳሜ ምን ትመርጣለህ?</label><select class="match-choice mt-1 w-full rounded-xl bg-[#241936] p-3"><option>ከጓደኞች ጋር</option><option>ቤት ውስጥ ዘና ማለት</option><option>አዲስ ቦታ መጎብኘት</option></select>
-          <label class="mt-3 block text-sm">3. ምን ያስደስትሃል?</label><select class="match-choice mt-1 w-full rounded-xl bg-[#241936] p-3"><option>ቀልድ</option><option>መማር</option><option>ፈጠራ</option><option>ውይይት</option></select>
-          <button onclick="matchResult()" class="mt-4 w-full rounded-xl bg-fuchsia-500 p-3 font-bold">ውጤቴን አሳይ</button><p id="matchResult" class="mt-3 text-sm text-fuchsia-200"></p>`;
-      } else {
-        title.textContent = '💌 መልካም መልዕክት';
-        body.innerHTML = `<p class="text-sm leading-6 text-slate-300">ለጓደኛህ የሚያበረታታ መልዕክት ጻፍ። ይህ የሙከራ ቅጽ መልዕክቱን አይልክም።</p>
-          <input id="recipient" maxlength="30" class="mt-4 w-full rounded-xl border border-white/15 bg-white/5 p-3" placeholder="የጓደኛ ቅጽል ስም (አማራጭ)">
-          <textarea id="secretMessage" rows="3" maxlength="250" class="mt-3 w-full rounded-xl border border-white/15 bg-white/5 p-3" placeholder="ለምሳሌ፦ ሁልጊዜ ስለምታበረታታኝ አመሰግናለሁ።"></textarea>
-          <button onclick="previewMessage()" class="mt-3 w-full rounded-xl bg-fuchsia-500 p-3 font-bold">ቅድመ እይታ</button><div id="messagePreview" class="mt-3 text-sm text-fuchsia-200"></div>`;
-      }
-    }
-    function closeGame() { panel.classList.add('hidden'); }
-    function localFeedback(message) { document.getElementById('feedback').textContent = message; }
-    function truthPick(type) {
-      document.getElementById('truthResult').textContent = type === 'truth' ? choose(truths) : choose(dares);
-    }
-    function matchResult() {
-      const choices = [...document.querySelectorAll('.match-choice')].map(el => el.value);
-      const unique = new Set(choices).size;
-      const score = Math.max(40, 100 - (unique - 1) * 15);
-      document.getElementById('matchResult').textContent = `የጨዋታ ውጤትህ ${score}% ነው። ይህ በመልሶችህ ላይ የተመሠረተ መዝናኛ ብቻ ነው፤ እውነተኛ ተኳኋኝነትን አይለካም።`;
-    }
-    function previewMessage() {
-      const message = document.getElementById('secretMessage').value.trim();
-      const recipient = document.getElementById('recipient').value.trim();
-      const target = document.getElementById('messagePreview');
-      if (!message) { target.textContent = 'እባክህ መልዕክት ጻፍ።'; return; }
-      target.textContent = `ቅድመ እይታ${recipient ? ' ለ' + recipient : ''}፦ ${message} — ይህ መልዕክት አልተላከም።`;
-    }
-
-    const drawer = document.getElementById('payDrawer');
-    function openPay() { drawer.classList.remove('hidden'); drawer.classList.add('flex'); }
-    function closePay() { drawer.classList.add('hidden'); drawer.classList.remove('flex'); }
-    document.getElementById('openPayTop').addEventListener('click', openPay);
-
-    document.getElementById('paymentForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      const txid = document.getElementById('txid').value.trim();
-      const file = document.getElementById('receipt').files[0];
-      const amount = document.getElementById('package').value;
-      const status = document.getElementById('paymentStatus');
-      status.classList.remove('hidden');
-      // የፊት ገጽ ማሳያ ብቻ ነው፤ የክፍያ ማረጋገጫ ወይም መብት መክፈት አያደርግም።
-      status.textContent = `የሙከራ ጥያቄ ተዘጋጅቷል፦ ${amount} ብር። የግብይት ቁጥር ${txid} እና ${file ? 'የተመረጠ ማስረጃ ፋይል' : 'ያልተመረጠ ማስረጃ'} በዚህ ስሪት ወደ አገልጋይ አልተላኩም። ክፍያው አልተረጋገጠም፤ ምንም የሚከፈል ይዘት አልተከፈተም።`;
-    });
-  </script>
-</body>
-</html>
+<!doctype html>
+<html lang="am"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#160b2e"><meta name="description" content="ZemaPlay — ጨዋታ፣ ወዳጅነት እና መልካም ቃል">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><title>ZemaPlay</title>
+<style>
+:root{--bg:#0d061a;--p:#211239;--line:#ffffff22;--purple:#a855f7;--pink:#db2777;--muted:#c4b5d8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#2b1246,var(--bg) 60%);color:white;font-family:system-ui,'Noto Sans Ethiopic',sans-serif;padding-bottom:85px}
+header{position:sticky;top:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:14px;background:#130923ee;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header small{color:#d8b4fe;letter-spacing:1px;font-size:10px}h1{margin:3px 0;font-size:24px}.wrap{max-width:700px;margin:auto;padding:16px}
+.card{background:#ffffff0b;border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0}.muted,small{color:var(--muted)}.muted{line-height:1.65;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tile,.answer{border:1px solid var(--line);background:#ffffff0b;border-radius:14px;padding:14px;color:white;text-align:left}.tile{min-height:108px}.tile span{font-size:24px}.tile b{display:block;margin:6px 0}.tile small{font-size:12px}.primary{background:linear-gradient(100deg,#9333ea,#db2777);border:0;border-radius:12px;color:white;padding:12px 15px;font-weight:700}.secondary{background:#ffffff10;border:1px solid var(--line);border-radius:12px;color:white;padding:10px 13px}.eyebrow{color:#d8b4fe}.hero h2{font-size:28px;line-height:1.35}.hide{display:none!important}.page{min-height:55vh}.question{font-size:20px;line-height:1.5}.answers{display:grid;gap:8px}.result{margin-top:12px;padding:12px;border-radius:12px;background:#34d39918;border:1px solid #34d39955;line-height:1.6}.nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;justify-content:space-around;background:#160b2ef5;border-top:1px solid var(--line);padding:10px 2px max(10px,env(safe-area-inset-bottom))}.nav button{background:none;color:var(--muted);font-size:11px;display:grid;gap:4px;justify-items:center}.nav button span{font-size:19px}.nav button.active{color:#d8b4fe}.field{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#100820;color:white;margin:7px 0 12px}.modal{position:fixed;inset:0;background:#000b;z-index:10;display:flex;align-items:center;justify-content:center;padding:15px}.modalbox{width:min(100%,450px);max-height:90vh;overflow:auto;background:#211239;border:1px solid #a855f755;border-radius:20px;padding:20px}.close{float:right;background:#ffffff12;color:white;border:0;border-radius:8px;padding:7px}.notice{font-size:12px;line-height:1.6;color:var(--muted)}.leader{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.leader:last-child{border:0}.footer{text-align:center;font-size:11px;color:#9f8bb6;padding:20px}
+</style></head><body>
+<header><div><small>HAWASSA • PLAY • CONNECT</small><h1>💜 ZemaPlay</h1></div><button class="secondary" onclick="page('premium')">👑 Premium</button><button id="install" class="secondary hide">Install App</button></header>
+<main class="wrap">
+<section id="home" class="page"><div class="card hero"><div class="eyebrow">ወደ ZemaPlay እንኳን በደህና መጡ!</div><h2>አንድ ጨዋታ።<br>አንድ አዲስ ታሪክ።</h2><p class="muted">የቀኑን ጥያቄ መልስ፣ አዝናኝ ፈተና ሞክር፣ መልካም ቃል አጋራ።</p>
+<div class="grid"><button class="tile" onclick="page('daily')"><span>🎯</span><b>የቀን ጥያቄ</b><small>ነፃ ጨዋታ</small></button><button class="tile" onclick="page('truth')"><span>🎭</span><b>Truth or Dare</b><small>ደህንነቱ የተጠበቀ</small></button><button class="tile" onclick="page('quiz')"><span>✨</span><b>Match Quiz</b><small>የወዳጅነት ፈተና</small></button><button class="tile" onclick="page('kind')"><span>💌</span><b>መልካም ቃል</b><small>ኮፒ አድርግ</small></button></div></div>
+<div class="card"><h3>⚡ የአንድ ደቂቃ ፈተና</h3><p class="muted">ጥያቄዎቹን በፍጥነት መልስ።</p><button class="primary" onclick="startQuick()">ፈተና ጀምር</button><div id="quick" class="hide"></div></div>
+<div class="card"><h3>🏆 የውጤት ማሳያ</h3><p class="notice">እነዚህ የማሳያ ምሳሌዎች ናቸው፤ እውነተኛ ተጠቃሚዎች አይደሉም።</p><div class="leader"><span>🥇 ተጫዋች 1</span><b>480 ነጥብ</b></div><div class="leader"><span>🥈 ተጫዋች 2</span><b>420 ነጥብ</b></div><div class="leader"><span>🥉 ተጫዋች 3</span><b>390 ነጥብ</b></div></div></section>
+<section id="daily" class="page hide"><div class="card"><h2>🎯 የቀን ጥያቄ</h2><p id="dq" class="question"></p><div id="da" class="answers"></div><div id="dr" aria-live="polite"></div><button class="secondary" style="margin-top:12px" onclick="nextDaily()">ሌላ ጥያቄ ↻</button></div></section>
+<section id="truth" class="page hide"><div class="card"><h2>🎭 Truth or Dare</h2><p class="muted">ማንኛውንም ጥያቄ መዝለል ትችላለህ። አደገኛ ወይም የግል መረጃ የሚጠይቅ ፈተና አይካተትም።</p><button class="primary" onclick="draw('truths')">Truth</button> <button class="primary" onclick="draw('dares')">Dare</button><div id="tr" class="result hide" aria-live="polite"></div></div></section>
+<section id="quiz" class="page hide"><div class="card"><h2>✨ የወዳጅነት Match Quiz</h2><p class="muted">ለመዝናናት ብቻ ነው፤ የግል ወይም የፍቅር ተስማሚነትን አይለካም።</p><div id="qq"></div><button class="primary" onclick="scoreQuiz()">ውጤት አሳይ</button><div id="qr"></div></div></section>
+<section id="kind" class="page hide"><div class="card"><h2>💌 መልካም ቃል</h2><p class="muted">የሚያበረታታ መልዕክት ኮፒ አድርገህ ለወዳጅህ ላክ። ይህ ገጽ ራሱ መልዕክት አይልክም።</p><div id="kt" class="result">ትንሽ እርምጃም ወደ ትልቅ ሕልም ያቀርባል። በራስህ እመን! 💜</div><p><button class="primary" onclick="newKind()">ሌላ መልዕክት</button> <button class="secondary" onclick="copyKind()">ኮፒ</button></p><div id="kc" class="notice"></div></div></section>
+<section id="premium" class="page hide"><div class="card"><h2>👑 Premium</h2><p class="muted">ዋጋዎቹ የማሳያ ምሳሌዎች ናቸው። እዚህ ክፍያ አይቀበልም ወይም አያረጋግጥም።</p><div class="grid"><div class="tile"><span>🎯</span><b>ጥያቄ ፓኬጅ</b><small>50 ብር — ማሳያ</small><button class="secondary" onclick="openPay()" style="margin-top:12px">ዝርዝር</button></div><div class="tile"><span>👑</span><b>Premium</b><small>100 ብር — ማሳያ</small><button class="secondary" onclick="openPay()" style="margin-top:12px">ዝርዝር</button></div></div><p class="notice">እውነተኛ ክፍያ ለመጀመር backend እና የተፈቀደ የክፍያ ውህደት ያስፈልጋል።</p></div></section>
+<section id="about" class="page hide"><div class="card"><h2>ስለ ZemaPlay</h2><p class="muted">የመዝናኛ ጨዋታ እና መልካም ቃል መድረክ። ስም፣ ስልክ ቁጥር፣ የትምህርት ቤት ወይም ሌላ የግል መረጃ አትጋራ። ይህ ስሪት መልዕክት ወደ ሌላ ሰው አይልክም፣ እውነተኛ መለያዎችን አያስተዳድርም።</p></div></section>
+<div class="footer">ZemaPlay • የሙከራ ስሪት</div></main>
+<nav class="nav"><button class="active" onclick="page('home',this)"><span>🏠</span>መነሻ</button><button onclick="page('daily',this)"><span>🎯</span>ጨዋታ</button><button onclick="page('kind',this)"><span>💌</span>መልካም ቃል</button><button onclick="page('premium',this)"><span>👑</span>Premium</button><button onclick="page('about',this)"><span>ℹ️</span>ስለ</button></nav>
+<div id="pay" class="modal hide" role="dialog" aria-modal="true"><div class="modalbox"><button class="close" onclick="closePay()">✕</button><h2>💳 Telebirr — ማሳያ</h2><p class="muted">እባክህ እውነተኛ ገንዘብ አትላክ። ይህ ስሪት ክፍያ አይቀበልም እና አያረጋግጥም።</p><label>ፓኬጅ</label><select class="field"><option>ጥያቄ ፓኬጅ — 50 ብር (ማሳያ)</option><option>Premium — 100 ብር (ማሳያ)</option></select><label>የሙከራ መለያ (እውነተኛ መረጃ አታስገባ)</label><input class="field" placeholder="የሙከራ ጽሑፍ"><button class="primary" onclick="document.getElementById('pn').textContent='ይህ ማሳያ ብቻ ነው፤ ክፍያ አልተላከም ወይም አልተረጋገጠም።';" style="width:100%">የሙከራ ማሳያ</button><p id="pn" class="notice" aria-live="polite"></p></div></div>
+<script>
+const ids=['home','daily','truth','quiz','kind','premium','about'];function page(id,btn){ids.forEach(x=>document.getElementById(x).classList.toggle('hide',x!==id));document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');else{let ix={home:0,daily:1,kind:2,premium:3,about:4}[id]??0;document.querySelectorAll('.nav button')[ix].classList.add('active')}window.scrollTo(0,0)}
+const ds=[['ሐዋሳ ውስጥ ምን ትወዳለህ?',['ተፈጥሮና ሐይቅ','ሙዚቃና ባህል','ሁለቱም'],'ምርጫህ ልዩ ነው፤ ለሌላ ሰው አጋራ!'],['ጥሩ ወዳጅነትን ምን ያጠናክራል?',['መከባበር','እውነተኛነት','ሁለቱም'],'መከባበርና እውነተኛነት ጠንካራ ወዳጅነት ይገነባሉ።'],['ዛሬ ምን መልካም ነገር ልታደርግ ትችላለህ?',['ሰውን ማበረታታት','አካባቢን ማጽዳት','ሌላ መልካም ሥራ'],'ትንሽ መልካም ሥራ ትልቅ ለውጥ ሊያመጣ ይችላል።']];let di=0;
+function renderDaily(){dq.textContent=ds[di][0];da.innerHTML='';dr.innerHTML='';ds[di][1].forEach(a=>{let b=document.createElement('button');b.className='answer';b.textContent=a;b.onclick=()=>{dr.innerHTML='<div class="result">'+ds[di][2]+'</div>';let n=+(localStorage.zpPoints||0)+5;localStorage.zpPoints=n};da.appendChild(b)})}function nextDaily(){di=(di+1)%ds.length;renderDaily()}
+const truths=['በቅርቡ የተማርከው አዲስ ነገር ምንድን ነው?','የሚያስቅህ ቀላል ነገር ምንድን ነው?','በራስህ የምትኮራበት ችሎታ ምንድን ነው?'];const dares=['ለአንድ ሰው እውነተኛ ምስጋና አቅርብ።','ሶስት መልካም ነገሮችን ጥቀስ።','አንድ አስቂኝ ፊት አሳይ።'];function draw(k){let a=k==='truths'?truths:dares;tr.textContent=a[Math.floor(Math.random()*a.length)];tr.classList.remove('hide')}
+const qdata=[['በትርፍ ጊዜህ ምን ትመርጣለህ?',['ስፖርት','ሙዚቃ','መማር']],['በወዳጅነት ውስጥ ምን ይበልጥ ያስፈልጋል?',['እምነት','ቀልድ','መከባበር']],['በቡድን ሲሆን ምን ትመርጣለህ?',['ሀሳብ ማቅረብ','ማዳመጥ','ሁለቱም']]];qq.innerHTML=qdata.map((q,i)=>'<p><b>'+(i+1)+'. '+q[0]+'</b></p>'+q[1].map((a,j)=>'<label style="display:block;padding:7px"><input type="radio" name="q'+i+'" value="'+j+'"> '+a+'</label>').join('')).join('');function scoreQuiz(){let c=qdata.filter((q,i)=>document.querySelector('input[name=q'+i+']:checked')).length;qr.innerHTML='<div class="result">'+(c===3?'ጨዋታውን ጨርሰሃል! 💜 ይህ የመዝናኛ ውጤት ብቻ ነው።':'እባክህ ሶስቱንም ጥያቄዎች መልስ።')+'</div>'}
+const ks=['ትንሽ እርምጃም ወደ ትልቅ ሕልም ያቀርባል። በራስህ እመን! 💜','መልካም ልብህን አትቀይር፤ ዓለም ተጨማሪ መልካምነት ያስፈልገዋል። 🌻','እያንዳንዱ ቀን አዲስ ዕድል ነው። መልካም ቀን! ✨'];function newKind(){kt.textContent=ks[Math.floor(Math.random()*ks.length)]}async function copyKind(){try{await navigator.clipboard.writeText(kt.textContent);kc.textContent='መልዕክቱ ተኮፒ ተደርጓል።'}catch(e){kc.textContent='ጽሑፉን በረጅሙ ተጭነህ ኮፒ አድርግ።'}}
+const quickQs=[['2 + 3 = ?', ['4','5','6'],1],['ሐዋሳ በየትኛው ክልል ነው?',['ሲዳማ','አፋር','ጋምቤላ'],0],['ከእነዚህ ውስጥ ቀለም የትኛው ነው?',['ሰማያዊ','ሩጫ','ዘፈን'],0]];function startQuick(){let i=0,s=0,el=document.getElementById('quick');el.classList.remove('hide');function drawQ(){if(i>=quickQs.length){el.innerHTML='<div class="result">ፈተናው ተጠናቋል! ውጤት: '+s+'/'+quickQs.length+'</div>';return}let q=quickQs[i];el.innerHTML='<p>'+q[0]+'</p>'+q[1].map((a,j)=>'<button class="answer" style="display:block;width:100%;margin:5px 0" data-j="'+j+'">'+a+'</button>').join('');el.querySelectorAll('button').forEach(b=>b.onclick=()=>{if(+b.dataset.j===q[2])s++;i++;drawQ()})}drawQ()}
+function openPay(){pay.classList.remove('hide')}function closePay(){pay.classList.add('hide')}renderDaily();
+let deferred;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;install.classList.remove('hide')});install.onclick=async()=>{if(deferred){deferred.prompt();await deferred.userChoice;deferred=null;install.classList.add('hide')}};if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script></body></html>
